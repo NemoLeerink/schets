@@ -7,22 +7,18 @@ namespace SchetsEditor
     public class Schets
     {
         private Bitmap bitmap;
-        //
-        private List<TekenElementen> elementen;
-        //
+        private List<TekenElement> elementen;
 
         public Schets()
         {
             bitmap = new Bitmap(1, 1);
-            //
-            elementen = new List<TekenElementen>();
-            //
+            elementen = new List<TekenElement>();
         }
         public Graphics BitmapGraphics
         {
             get { return Graphics.FromImage(bitmap); }
         }
-        public List<TekenElementen> TekenElementen
+        public List<TekenElement> TekenElementen
         {
             get { return elementen ; }
         }
@@ -54,17 +50,23 @@ namespace SchetsEditor
             bitmap.RotateFlip(RotateFlipType.Rotate90FlipNone);
         }
     }
-    public class TekenElementen 
+    public class TekenElement 
     {
         // (soort, beginpunt, eindpunt, kleur, eventuele tekst)
         
-        TekenElementen(Color elementKleur, Point elementBeginpunt, Point elementEindpunt, String elementTekst, String elementSoort) 
+        public TekenElement(Color elementKleur, Point elementBeginpunt, Point elementEindpunt, String elementTekst, String elementSoort) 
         {
             Color kleur = elementKleur;
             Point beginpunt = elementBeginpunt;
             Point eindpunt = elementEindpunt;
             String tekst = elementTekst;
             String soort = elementSoort;
+
+            Console.WriteLine(kleur);
+            Console.WriteLine(beginpunt);
+            Console.WriteLine(eindpunt);
+            Console.WriteLine(tekst);
+            Console.WriteLine(soort);
         }
     }
 }

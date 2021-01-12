@@ -75,6 +75,10 @@ namespace SchetsEditor
         public override void MuisLos(SchetsControl s, Point p)
         {   base.MuisLos(s, p);
             this.Compleet(s.MaakBitmapGraphics(), this.startpunt, p);
+            
+            
+            TekenElement element = new TekenElement(s.PenKleur, this.startpunt, p, null, Typeelement);
+            s.Schets.TekenElementen.Add(element);
             s.Invalidate();
         }
         public override void Letter(SchetsControl s, char c)
@@ -105,7 +109,9 @@ namespace SchetsEditor
         }
     }
    
-    //
+    /// <summary>
+    /// Ovaal en gevulde ovaal toegevoegd
+    /// </summary>
     public class OvaalTool : TweepuntTool
     {
         public override string ToString() { return "ovaal"; }
@@ -114,8 +120,6 @@ namespace SchetsEditor
         {
             g.DrawEllipse(MaakPen(kwast, 3), TweepuntTool.Punten2Rechthoek(p1, p2));
         }
-
-        
     }
 
     public class VolOvaalTool : OvaalTool
@@ -127,7 +131,6 @@ namespace SchetsEditor
             g.FillEllipse(kwast, TweepuntTool.Punten2Rechthoek(p1, p2));
         }
     }
-    //
 
     public class LijnTool : TweepuntTool
     {
