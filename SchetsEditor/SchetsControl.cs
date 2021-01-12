@@ -36,6 +36,7 @@ namespace SchetsEditor
             g.SmoothingMode = SmoothingMode.AntiAlias;
             return g;
         }
+
         public void Schoon(object o, EventArgs ea)
         {   schets.Schoon();
             this.Invalidate();

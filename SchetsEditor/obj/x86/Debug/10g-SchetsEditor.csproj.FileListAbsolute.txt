@@ -5,3 +5,4 @@ C:\Users\Nemo\Desktop\schets\SchetsEditor\obj\x86\Debug\10g-SchetsEditor.csproj.
 C:\Users\Nemo\Desktop\schets\SchetsEditor\obj\x86\Debug\10g-SchetsEditor.csproj.CoreCompileInputs.cache
 C:\Users\Nemo\Desktop\schets\SchetsEditor\obj\x86\Debug\Schets.exe
 C:\Users\Nemo\Desktop\schets\SchetsEditor\obj\x86\Debug\Schets.pdb
+C:\Users\Nemo\Desktop\schets\SchetsEditor\obj\x86\Debug\10g-SchetsEditor.csprojAssemblyReference.cache
