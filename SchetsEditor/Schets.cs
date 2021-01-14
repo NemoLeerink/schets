@@ -7,20 +7,14 @@ namespace SchetsEditor
     public class Schets
     {
         private Bitmap bitmap;
-        private List<TekenElement> elementen;
 
         public Schets()
         {
             bitmap = new Bitmap(1, 1);
-            elementen = new List<TekenElement>();
         }
         public Graphics BitmapGraphics
         {
             get { return Graphics.FromImage(bitmap); }
-        }
-        public List<TekenElement> TekenElementen
-        {
-            get { return elementen ; }
         }
 
         public void VeranderAfmeting(Size sz)
@@ -54,12 +48,12 @@ namespace SchetsEditor
     {
         // (soort, beginpunt, eindpunt, kleur, eventuele tekst)
         
-        public TekenElement(Color elementKleur, Point elementBeginpunt, Point elementEindpunt, String elementTekst, String elementSoort) 
+        public TekenElement(Color elementKleur, Point elementBeginpunt, Point elementEindpunt, Char charTekst, String elementSoort) 
         {
             Color kleur = elementKleur;
             Point beginpunt = elementBeginpunt;
             Point eindpunt = elementEindpunt;
-            String tekst = elementTekst;
+            Char tekst = charTekst;
             String soort = elementSoort;
 
             Console.WriteLine(kleur);
@@ -67,6 +61,13 @@ namespace SchetsEditor
             Console.WriteLine(eindpunt);
             Console.WriteLine(tekst);
             Console.WriteLine(soort);
+        }
+
+        public Bitmap MaakBitmap() {
+            //
+            
+            Bitmap bitmap = new Bitmap(1,1);
+            return new Bitmap(0,0);
         }
     }
 }

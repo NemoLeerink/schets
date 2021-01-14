@@ -75,10 +75,6 @@ namespace SchetsEditor
         public override void MuisLos(SchetsControl s, Point p)
         {   base.MuisLos(s, p);
             this.Compleet(s.MaakBitmapGraphics(), this.startpunt, p);
-            
-            
-            TekenElement element = new TekenElement(s.PenKleur, this.startpunt, p, null, Typeelement);
-            s.Schets.TekenElementen.Add(element);
             s.Invalidate();
         }
         public override void Letter(SchetsControl s, char c)

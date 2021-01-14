@@ -10,6 +10,7 @@ namespace SchetsEditor
     public class SchetsWin : Form
     {   
         MenuStrip menuStrip;
+        List<TekenElement> elementen = new List<TekenElement>();
         SchetsControl schetscontrol;
         ISchetsTool huidigeTool;
         Panel paneel;
@@ -43,6 +44,9 @@ namespace SchetsEditor
 
         public SchetsWin()
         {
+            Point beginpunt = new Point(0, 0);
+            Point eindpunt = new Point(0, 0);
+
             ISchetsTool[] deTools = { new PenTool()
                                     , new LijnTool()
                                     , new RechthoekTool()
@@ -63,7 +67,11 @@ namespace SchetsEditor
             schetscontrol.Location = new Point(64, 10);
             schetscontrol.MouseDown += (object o, MouseEventArgs mea) =>
                                        {   vast=true;  
-                                           huidigeTool.MuisVast(schetscontrol, mea.Location); 
+                                           huidigeTool.MuisVast(schetscontrol, mea.Location);
+
+                                           // mea.location is startpunt
+                                           beginpunt = mea.Location;
+                                           
                                        };
             schetscontrol.MouseMove += (object o, MouseEventArgs mea) =>
                                        {   if (vast)
@@ -71,11 +79,29 @@ namespace SchetsEditor
                                        };
             schetscontrol.MouseUp   += (object o, MouseEventArgs mea) =>
                                        {   if (vast)
+                                           // pas aanroepen wanneer het uitkomt
                                            huidigeTool.MuisLos (schetscontrol, mea.Location);
-                                           vast = false; 
+                                           vast = false;
+
+                                           // mea.location is eindpunt
+                                           // maak nieuw element aan
+                                           if (huidigeTool.ToString() != "tekst")
+                                           {
+                                               eindpunt = mea.Location;
+                                               maakNieuwElement(schetscontrol.PenKleur, beginpunt, eindpunt, (char)0, huidigeTool.ToString());
+
+                                           }
                                        };
             schetscontrol.KeyPress +=  (object o, KeyPressEventArgs kpea) => 
-                                       {   huidigeTool.Letter  (schetscontrol, kpea.KeyChar); 
+                                       {   
+                                           // pas aanroepen wanneer het uitkomt
+                                           huidigeTool.Letter  (schetscontrol, kpea.KeyChar);
+
+                                           // je typt, beginpunt = beginpunt. Nieuwe beginpunt wordt 40 op de x hoger. Eindpunt niet perse nodig
+       
+                                           eindpunt = new Point(beginpunt.X + 40, beginpunt.Y);
+                                           maakNieuwElement(schetscontrol.PenKleur, beginpunt, eindpunt, kpea.KeyChar, huidigeTool.ToString());
+                                           beginpunt.X += 40;
                                        };
             this.Controls.Add(schetscontrol);
 
@@ -91,6 +117,13 @@ namespace SchetsEditor
             this.veranderAfmeting(null, null);
         }
 
+
+        private void maakNieuwElement(Color kleur, Point p1, Point p2, Char tekst, String soort) 
+        {
+            TekenElement element = new TekenElement(kleur, p1, p2, tekst, soort);
+            elementen.Add(element);
+        }
+        
         private void maakFileMenu()
         {   
             ToolStripMenuItem menu = new ToolStripMenuItem("File");
