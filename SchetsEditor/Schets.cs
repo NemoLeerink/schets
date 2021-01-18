@@ -63,6 +63,27 @@ namespace SchetsEditor
             Console.WriteLine(soort);
         }
 
+        public Color kleur
+        {
+            get { return kleur; }
+        }
+        public Point beginpunt
+        {
+            get { return beginpunt; }
+        }
+        public Point eindpunt
+        {
+            get { return eindpunt; }
+        }
+        public Char tekst
+        {
+            get { return tekst; }
+        }
+        public String soort
+        {
+            get { return soort; } 
+        }
+
         public Bitmap MaakBitmap() {
             //
             

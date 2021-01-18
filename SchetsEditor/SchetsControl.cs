@@ -10,6 +10,7 @@ namespace SchetsEditor
 
         public Color PenKleur
         { get { return penkleur; }
+            set { penkleur = value; }  
         }
         public Schets Schets
         { get { return schets;   }

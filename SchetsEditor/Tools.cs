@@ -15,7 +15,7 @@ namespace SchetsEditor
     public abstract class StartpuntTool : ISchetsTool
     {
         protected Point startpunt;
-        protected Brush kwast;
+        protected Brush kwast = new SolidBrush(Color.Black);
 
         public virtual void MuisVast(SchetsControl s, Point p)
         {   startpunt = p;
