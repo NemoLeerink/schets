@@ -8,7 +8,7 @@ namespace SchetsEditor
     {
         void MuisVast(SchetsControl s, Point p);
         void MuisDrag(SchetsControl s, Point p);
-        void MuisLos(SchetsControl s, Point p);
+        void MuisLos(SchetsControl s, Point p, String huidigeTool);
         void Letter(SchetsControl s, char c);
     }
 
@@ -20,7 +20,7 @@ namespace SchetsEditor
         public virtual void MuisVast(SchetsControl s, Point p)
         {   startpunt = p;
         }
-        public virtual void MuisLos(SchetsControl s, Point p)
+        public virtual void MuisLos(SchetsControl s, Point p, String huidigeTool)
         {   kwast = new SolidBrush(s.PenKleur);
         }
         public abstract void MuisDrag(SchetsControl s, Point p);
@@ -72,8 +72,22 @@ namespace SchetsEditor
         {   s.Refresh();
             this.Bezig(s.CreateGraphics(), this.startpunt, p);
         }
-        public override void MuisLos(SchetsControl s, Point p)
-        {   base.MuisLos(s, p);
+        public override void MuisLos(SchetsControl s, Point p, String huidigeTool)
+        {   base.MuisLos(s, p, huidigeTool);
+            // Element aanmaken
+            //TekenElement element = new TekenElement(s.PenKleur, this.startpunt, p, (char)0, huidigeTool);
+            s.Schets.maakNieuwElement(s.PenKleur, this.startpunt, p, (char)0, huidigeTool);
+
+            foreach (TekenElement el in s.Schets.elementen) {
+                Console.WriteLine("Soort: " + el.soort);
+                Console.WriteLine("kleur;: " + el.kleur);
+                Console.WriteLine("beginpunt: " + el.beginpunt);
+                Console.WriteLine("eindpunt: " + el.eindpunt);
+                Console.WriteLine("tekst: " + el.tekst);
+            }
+            Console.WriteLine("Count is: " + s.Schets.elementen.Count);
+            
+
             this.Compleet(s.MaakBitmapGraphics(), this.startpunt, p);
             s.Invalidate();
         }
@@ -142,7 +156,9 @@ namespace SchetsEditor
         public override string ToString() { return "pen"; }
 
         public override void MuisDrag(SchetsControl s, Point p)
-        {   this.MuisLos(s, p);
+        {
+            // this.MuisLos(s, p);
+            this.MuisLos(s, p, "pen");
             this.MuisVast(s, p);
         }
     }
