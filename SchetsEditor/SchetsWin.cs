@@ -19,6 +19,16 @@ namespace SchetsEditor
                                  , Assembly.GetExecutingAssembly()
                                  );
 
+        public static ISchetsTool[] deTools = { new PenTool()
+                                    , new LijnTool()
+                                    , new RechthoekTool()
+                                    , new VolRechthoekTool()
+                                    , new OvaalTool()
+                                    , new VolOvaalTool()
+                                    , new TekstTool()
+                                    , new GumTool()
+                                    };
+
         private void veranderAfmeting(object o, EventArgs ea)
         {
             schetscontrol.Size = new Size ( this.ClientSize.Width  - 70
@@ -46,30 +56,19 @@ namespace SchetsEditor
             /*Point beginpunt = new Point(0, 0);
             Point eindpunt = new Point(0, 0);*/
 
-            ISchetsTool[] deTools = { new PenTool()
-                                    , new LijnTool()
-                                    , new RechthoekTool()
-                                    , new VolRechthoekTool()
-                                    , new OvaalTool()
-                                    , new VolOvaalTool()
-                                    , new TekstTool()
-                                    , new GumTool()
-                                    };
             String[] deKleuren = { "Black", "Red", "Green", "Blue"
                                  , "Yellow", "Magenta", "Cyan" 
                                  };
 
             this.ClientSize = new Size(700, 500);
             huidigeTool = deTools[0];
+            int letter = 0;
 
             schetscontrol = new SchetsControl();
             schetscontrol.Location = new Point(64, 10);
             schetscontrol.MouseDown += (object o, MouseEventArgs mea) =>
                                        {   vast=true;  
                                            huidigeTool.MuisVast(schetscontrol, mea.Location);
-
-                                           /*// mea.location is startpunt
-                                           beginpunt = mea.Location;*/
                                            
                                        };
             schetscontrol.MouseMove += (object o, MouseEventArgs mea) =>
@@ -78,29 +77,16 @@ namespace SchetsEditor
                                        };
             schetscontrol.MouseUp   += (object o, MouseEventArgs mea) =>
                                        {   if (vast)
-                                           // pas aanroepen wanneer het uitkomt
+   
                                            huidigeTool.MuisLos (schetscontrol, mea.Location, huidigeTool.ToString());
                                            vast = false;
-
-                                           // mea.location is eindpunt
-                                           /*// maak nieuw element aan
-                                           if (huidigeTool.ToString() != "tekst")
-                                           {
-                                               eindpunt = mea.Location;
-                                               maakNieuwElement(schetscontrol.PenKleur, beginpunt, eindpunt, (char)0, huidigeTool.ToString());
-
-                                           }*/
+                                           letter = 1;
+                                          
                                        };
             schetscontrol.KeyPress +=  (object o, KeyPressEventArgs kpea) => 
                                        {   
-                                           // pas aanroepen wanneer het uitkomt
-                                           huidigeTool.Letter  (schetscontrol, kpea.KeyChar);
-
-                                           // je typt, beginpunt = beginpunt. Nieuwe beginpunt wordt 40 op de x hoger. Eindpunt niet perse nodig
-       
-                                           /*eindpunt = new Point(beginpunt.X + 40, beginpunt.Y);
-                                           maakNieuwElement(schetscontrol.PenKleur, beginpunt, eindpunt, kpea.KeyChar, huidigeTool.ToString());
-                                           beginpunt.X += 40;*/
+                                           huidigeTool.Letter  (schetscontrol, kpea.KeyChar, huidigeTool.ToString(), letter);
+                                           letter++;
                                        };
             this.Controls.Add(schetscontrol);
 
