@@ -9,7 +9,7 @@ namespace SchetsEditor
         void MuisVast(SchetsControl s, Point p);
         void MuisDrag(SchetsControl s, Point p);
         void MuisLos(SchetsControl s, Point p, String huidigeTool);
-        void Letter(SchetsControl s, char c, String huidigeTool, int letter);
+        void Letter(SchetsControl s, char c, String huidigeTool);
         void Teken(Graphics g, Point p1, Point p2, Color kleur, Char charTekst);
     }
 
@@ -27,7 +27,7 @@ namespace SchetsEditor
             kwast = new SolidBrush(s.PenKleur);
         }
         public abstract void MuisDrag(SchetsControl s, Point p);
-        public abstract void Letter(SchetsControl s, char c, String huidigeTool, int letter);
+        public abstract void Letter(SchetsControl s, char c, String huidigeTool);
         public abstract void Teken(Graphics g, Point p1, Point p2, Color kleur, Char charTekst);
     }
 
@@ -37,10 +37,18 @@ namespace SchetsEditor
 
         public override void MuisDrag(SchetsControl s, Point p) { }
 
-        public override void Letter(SchetsControl s, char c, string huidigeTool, int letter)
+        public override void Letter(SchetsControl s, char c, string huidigeTool)
         {
-            // 40 is het niet helemaal, maar principe werkt 
-            s.maakNieuwElement(s.PenKleur, new Point(startpunt.X + (40 * letter), startpunt.Y), new Point(startpunt.X + (40 * (letter+1)), startpunt.Y), c, huidigeTool);
+            Graphics g = s.CreateGraphics();
+            Font font = new Font("Tahoma", 40);
+            string tekst = c.ToString();
+
+            SizeF sz =
+                g.MeasureString(tekst, font, startpunt.X, StringFormat.GenericTypographic);
+
+            s.maakNieuwElement(s.PenKleur, new Point(startpunt.X, startpunt.Y), new Point(startpunt.X + (int)sz.Width, startpunt.Y + (int)sz.Height), c, huidigeTool);
+
+            startpunt.X += (int)sz.Width;
 
             Console.WriteLine("Count is: " + s.elementen.Count);
 
@@ -53,10 +61,10 @@ namespace SchetsEditor
             {
                 Font font = new Font("Tahoma", 40);
                 string tekst = c.ToString();
-                SizeF sz =
-                g.MeasureString(tekst, font, p1, StringFormat.GenericTypographic);
+
                 g.DrawString(tekst, font, new SolidBrush(kleur),
                                               p1, StringFormat.GenericTypographic);
+
             }
         }
     }
@@ -89,7 +97,10 @@ namespace SchetsEditor
         public override void MuisLos(SchetsControl s, Point p, String huidigeTool)
         {
             base.MuisLos(s, p, huidigeTool);
-            s.maakNieuwElement(s.PenKleur, this.startpunt, p, (char)0, huidigeTool);
+            if (huidigeTool != "gum")
+                s.maakNieuwElement(s.PenKleur, this.startpunt, p, (char)0, huidigeTool);
+            else
+                s.verwijderElement(this.startpunt);
 
             Console.WriteLine("Count is: " + s.elementen.Count);
 
@@ -97,7 +108,7 @@ namespace SchetsEditor
             s.Invalidate();
         }
         
-        public override void Letter(SchetsControl s, char c, String huidigeTool, int letter)
+        public override void Letter(SchetsControl s, char c, String huidigeTool)
         {
         }
         public abstract void Bezig(Graphics g, Point p1, Point p2);
@@ -196,13 +207,16 @@ namespace SchetsEditor
         }
     }
 
-    public class GumTool : PenTool
+    public class GumTool : TweepuntTool
     {
         public override string ToString() { return "gum"; }
 
         public override void Bezig(Graphics g, Point p1, Point p2)
         {
-            g.DrawLine(MaakPen(Brushes.White, 7), p1, p2);
-        } 
+        }
+
+        public override void Teken(Graphics g, Point p1, Point p2, Color kleur, Char c)
+        {
+        }
     }
 }

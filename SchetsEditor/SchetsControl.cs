@@ -47,7 +47,9 @@ namespace SchetsEditor
             this.Invalidate();
         }
         public Graphics MaakBitmapGraphics()
-        {   Graphics g = schets.BitmapGraphics;
+        {
+            schets.Schoon();
+            Graphics g = schets.BitmapGraphics;
             g.SmoothingMode = SmoothingMode.AntiAlias;
             return g;
         }
@@ -94,6 +96,23 @@ namespace SchetsEditor
 
             this.schets.Teken(gr);
         }
+
+        public void verwijderElement(Point p1) 
+        {
+
+            for (int i = elementen.Count - 1; i >= 0; i--)
+            {
+                if  (p1.X - elementen[i].beginpunt.X >= 0 &&
+                    p1.X - elementen[i].eindpunt.X <= 0 &&
+                    p1.Y - elementen[i].beginpunt.Y >= 0 &&
+                    p1.Y - elementen[i].eindpunt.Y <= 0)
+                {
+                    elementen.RemoveAt(i);
+                    break;
+                }
+            }
+        }
+   
     }
     public class TekenElement
     {

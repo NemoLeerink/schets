@@ -53,8 +53,6 @@ namespace SchetsEditor
 
         public SchetsWin()
         {
-            /*Point beginpunt = new Point(0, 0);
-            Point eindpunt = new Point(0, 0);*/
 
             String[] deKleuren = { "Black", "Red", "Green", "Blue"
                                  , "Yellow", "Magenta", "Cyan" 
@@ -62,7 +60,6 @@ namespace SchetsEditor
 
             this.ClientSize = new Size(700, 500);
             huidigeTool = deTools[0];
-            int letter = 0;
 
             schetscontrol = new SchetsControl();
             schetscontrol.Location = new Point(64, 10);
@@ -80,13 +77,11 @@ namespace SchetsEditor
    
                                            huidigeTool.MuisLos (schetscontrol, mea.Location, huidigeTool.ToString());
                                            vast = false;
-                                           letter = 1;
                                           
                                        };
             schetscontrol.KeyPress +=  (object o, KeyPressEventArgs kpea) => 
                                        {   
-                                           huidigeTool.Letter  (schetscontrol, kpea.KeyChar, huidigeTool.ToString(), letter);
-                                           letter++;
+                                           huidigeTool.Letter  (schetscontrol, kpea.KeyChar, huidigeTool.ToString());
                                        };
             this.Controls.Add(schetscontrol);
 
