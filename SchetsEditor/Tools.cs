@@ -98,7 +98,9 @@ namespace SchetsEditor
         {
             base.MuisLos(s, p, huidigeTool);
             if (huidigeTool != "gum")
+            {
                 s.maakNieuwElement(s.PenKleur, this.startpunt, p, (char)0, huidigeTool);
+            }
             else
                 s.verwijderElement(this.startpunt);
 

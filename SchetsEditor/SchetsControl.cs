@@ -76,6 +76,7 @@ namespace SchetsEditor
         {
             TekenElement element = new TekenElement(kleur, p1, p2, tekst, soort);
             elementen.Add(element);
+            Console.WriteLine(soort);
         }
 
         private void selectTool(String soort)
@@ -97,22 +98,76 @@ namespace SchetsEditor
             this.schets.Teken(gr);
         }
 
+        private bool contains(Point location, Point centre, double xRadius, double yRadius)
+        {
+            if (xRadius <= 0.0 || yRadius <= 0.0)
+                return false;
+            Point normalized = new Point(location.X - centre.X, location.Y - centre.Y);
+            return ((double)(normalized.X * normalized.X) / (xRadius * xRadius)) +
+                ((double)(normalized.Y * normalized.Y) / (yRadius * yRadius)) <= 1.0;
+        }
+
         public void verwijderElement(Point p1) 
         {
-
             for (int i = elementen.Count - 1; i >= 0; i--)
             {
-                if  (p1.X - elementen[i].beginpunt.X >= 0 &&
-                    p1.X - elementen[i].eindpunt.X <= 0 &&
-                    p1.Y - elementen[i].beginpunt.Y >= 0 &&
-                    p1.Y - elementen[i].eindpunt.Y <= 0)
+                if (elementen[i].soort == "lijn" || elementen[i].soort == "pen")
                 {
-                    elementen.RemoveAt(i);
-                    break;
+                    int mostx;
+                    int leastx;
+                    if (elementen[i].beginpunt.X > elementen[i].eindpunt.X)
+                    {
+                        mostx = elementen[i].beginpunt.X;
+                        leastx = elementen[i].eindpunt.X;
+                    }
+                    else
+                    {
+                        mostx = elementen[i].eindpunt.X;
+                        leastx = elementen[i].beginpunt.X;
+                    }
+                    double deltax = elementen[i].eindpunt.X - elementen[i].beginpunt.X;
+                    double deltay = elementen[i].eindpunt.Y - elementen[i].beginpunt.Y;
+                    double rc = deltay / deltax;
+                    double b = rc * elementen[i].beginpunt.X - elementen[i].beginpunt.Y;
+                    
+                    for (int j = leastx; j <= mostx; j++)
+                    {
+                        if (p1.X - j >= -5 &&
+                            p1.X - j <= 5 &&
+                            (p1.Y - j*rc + b) >= -5 &&
+                            (p1.Y - j*rc + b) <= 5)
+                        {
+                            elementen.RemoveAt(i);
+                            break;
+                        }
+                    }
+                }
+                else if (elementen[i].soort == "ovaal" || elementen[i].soort == "ovaalvol")
+                {
+                    int xRadius = Math.Abs(elementen[i].eindpunt.X - elementen[i].beginpunt.X) / 2;
+                    int yRadius = Math.Abs(elementen[i].eindpunt.Y - elementen[i].beginpunt.Y) / 2;
+                    int minX = Math.Min(elementen[i].beginpunt.X, elementen[i].eindpunt.X);
+                    int minY = Math.Min(elementen[i].beginpunt.Y, elementen[i].eindpunt.Y);
+                    Point centre = new Point(minX + xRadius, minY + yRadius);
+                    if (contains(p1, centre, xRadius, yRadius))
+                    {
+                        elementen.RemoveAt(i);
+                        break;
+                    }
+                }
+                else
+                {
+                    if (p1.X - elementen[i].beginpunt.X >= 0 &&
+                        p1.X - elementen[i].eindpunt.X <= 0 &&
+                        p1.Y - elementen[i].beginpunt.Y >= 0 &&
+                        p1.Y - elementen[i].eindpunt.Y <= 0)
+                    {
+                        elementen.RemoveAt(i);
+                        break;
+                    }
                 }
             }
         }
-   
     }
     public class TekenElement
     {
@@ -131,6 +186,5 @@ namespace SchetsEditor
             tekst = charTekst;
             soort = elementSoort;
         }
-
     }
 }
