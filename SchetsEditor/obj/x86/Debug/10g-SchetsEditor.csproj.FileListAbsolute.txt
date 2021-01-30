@@ -14,3 +14,11 @@ C:\Users\Gebruiker\Documents\schets\SchetsEditor\obj\x86\Debug\10g-SchetsEditor.
 C:\Users\Gebruiker\Documents\schets\SchetsEditor\obj\x86\Debug\10g-SchetsEditor.csproj.CoreCompileInputs.cache
 C:\Users\Gebruiker\Documents\schets\SchetsEditor\obj\x86\Debug\Schets.exe
 C:\Users\Gebruiker\Documents\schets\SchetsEditor\obj\x86\Debug\Schets.pdb
+C:\Users\Lenovo Thinkpad\Desktop\schets\SchetsEditor\bin\Debug\Schets.exe
+C:\Users\Lenovo Thinkpad\Desktop\schets\SchetsEditor\bin\Debug\Schets.pdb
+C:\Users\Lenovo Thinkpad\Desktop\schets\SchetsEditor\obj\x86\Debug\10g-SchetsEditor.csprojAssemblyReference.cache
+C:\Users\Lenovo Thinkpad\Desktop\schets\SchetsEditor\obj\x86\Debug\SchetsEditor.Properties.Resources.resources
+C:\Users\Lenovo Thinkpad\Desktop\schets\SchetsEditor\obj\x86\Debug\10g-SchetsEditor.csproj.GenerateResource.cache
+C:\Users\Lenovo Thinkpad\Desktop\schets\SchetsEditor\obj\x86\Debug\10g-SchetsEditor.csproj.CoreCompileInputs.cache
+C:\Users\Lenovo Thinkpad\Desktop\schets\SchetsEditor\obj\x86\Debug\Schets.exe
+C:\Users\Lenovo Thinkpad\Desktop\schets\SchetsEditor\obj\x86\Debug\Schets.pdb

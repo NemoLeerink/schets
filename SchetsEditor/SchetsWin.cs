@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Reflection;
 using System.Resources;
+using System.IO;
 
 namespace SchetsEditor
 {
@@ -50,6 +51,76 @@ namespace SchetsEditor
         {
             this.Close();
         }
+        private void opslaan(object obj, EventArgs ea)
+        {
+
+            String fileName = "../../Tekening.txt";
+            try
+            {
+                using (StreamWriter sw = new StreamWriter(fileName))
+                {
+                    
+                    foreach (TekenElement el in this.schetscontrol.elementen)
+                    {
+                        sw.WriteLine(el.ToString());
+                        Console.WriteLine(el.ToString());
+                    }
+
+                }
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+        }
+        private void openen(object obj, EventArgs ea)
+        {
+            string pad = "";
+            try
+            {
+                OpenFileDialog bestand = new OpenFileDialog();
+                if (bestand.ShowDialog() == DialogResult.OK)
+                {
+                    pad = bestand.FileName;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+
+            try
+            {
+                this.schetscontrol.elementen.Clear();
+                int nr = 0;
+                StreamReader sr = new StreamReader(pad);
+                string regel;
+                string[] w;
+                char[] separators = { ' ' };
+                while ((regel = sr.ReadLine()) != null)
+                {
+                    nr++;
+                    w = regel.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+                    if (w.Length == 7)
+                    {
+                        Point beginpunt = new Point(int.Parse(w[1]), int.Parse(w[2]));
+                        Point eindpunt = new Point(int.Parse(w[3]), int.Parse(w[4]));
+                        char c = char.Parse(w[5]);
+
+                        this.schetscontrol.maakNieuwElement(Color.FromName(w[0]), beginpunt, eindpunt, c, w[6]);
+                    }
+                }
+                sr.Close();
+                // Werkt niet? Werkte voorheen wel??
+                this.schetscontrol.Invalidate();
+            }
+            catch (Exception e) 
+            {
+                Console.WriteLine(e.ToString());
+            }
+        }
+        
 
         public SchetsWin()
         {
@@ -101,6 +172,8 @@ namespace SchetsEditor
         {   
             ToolStripMenuItem menu = new ToolStripMenuItem("File");
             menu.MergeAction = MergeAction.MatchOnly;
+            menu.DropDownItems.Add("Openen", null, this.openen);
+            menu.DropDownItems.Add("Opslaan", null, this.opslaan);
             menu.DropDownItems.Add("Sluiten", null, this.afsluiten);
             menuStrip.Items.Add(menu);
         }
@@ -123,7 +196,7 @@ namespace SchetsEditor
         {   
             ToolStripMenuItem menu = new ToolStripMenuItem("Aktie");
             menu.DropDownItems.Add("Clear", null, schetscontrol.Schoon );
-            menu.DropDownItems.Add("Roteer", null, schetscontrol.Roteer );
+            //menu.DropDownItems.Add("Roteer", null, schetscontrol.Roteer );
             ToolStripMenuItem submenu = new ToolStripMenuItem("Kies kleur");
             foreach (string k in kleuren)
                 submenu.DropDownItems.Add(k, null, schetscontrol.VeranderKleurViaMenu);
@@ -165,11 +238,11 @@ namespace SchetsEditor
             b.Click += schetscontrol.Schoon; 
             paneel.Controls.Add(b);
             
-            b = new Button(); 
+            /*b = new Button(); 
             b.Text = "Rotate"; 
             b.Location = new Point( 80, 0); 
             b.Click += schetscontrol.Roteer; 
-            paneel.Controls.Add(b);
+            paneel.Controls.Add(b);*/
             
             l = new Label();  
             l.Text = "Penkleur:"; 

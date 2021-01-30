@@ -50,7 +50,7 @@ namespace SchetsEditor
 
             startpunt.X += (int)sz.Width;
 
-            Console.WriteLine("Count is: " + s.elementen.Count);
+            // Console.WriteLine("Count is: " + s.elementen.Count);
 
             s.tekenOpGr();
             s.Invalidate();
@@ -99,12 +99,12 @@ namespace SchetsEditor
             base.MuisLos(s, p, huidigeTool);
             if (huidigeTool != "gum")
             {
-                s.maakNieuwElement(s.PenKleur, this.startpunt, p, (char)0, huidigeTool);
+                s.maakNieuwElement(s.PenKleur, this.startpunt, p, '0', huidigeTool);
             }
             else
                 s.verwijderElement(this.startpunt);
 
-            Console.WriteLine("Count is: " + s.elementen.Count);
+            // Console.WriteLine("Count is: " + s.elementen.Count);
 
             s.tekenOpGr();      
             s.Invalidate();

@@ -68,6 +68,7 @@ namespace SchetsEditor
         {   string kleurNaam = ((ComboBox)obj).Text;
             penkleur = Color.FromName(kleurNaam);
         }
+
         public void VeranderKleurViaMenu(object obj, EventArgs ea)
         {   string kleurNaam = ((ToolStripMenuItem)obj).Text;
             penkleur = Color.FromName(kleurNaam);
@@ -76,7 +77,7 @@ namespace SchetsEditor
         {
             TekenElement element = new TekenElement(kleur, p1, p2, tekst, soort);
             elementen.Add(element);
-            Console.WriteLine(soort);
+            // Console.WriteLine(soort);
         }
 
         private void selectTool(String soort)
@@ -185,6 +186,11 @@ namespace SchetsEditor
             eindpunt = elementEindpunt;
             tekst = charTekst;
             soort = elementSoort;
+        }
+
+        public override string ToString()
+        {
+            return $"{kleur.Name} {beginpunt.X} {beginpunt.Y} {eindpunt.X} {eindpunt.Y} {tekst} {soort}";
         }
     }
 }
