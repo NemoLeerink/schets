@@ -54,7 +54,18 @@ namespace SchetsEditor
         private void opslaan(object obj, EventArgs ea)
         {
 
-            String fileName = "../../Tekening.txt";
+            String fileName = "";
+            
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            saveFileDialog1.Filter = "Text file|*.txt";
+            saveFileDialog1.Title = "Save an Text File";
+            saveFileDialog1.ShowDialog();
+   
+            if (saveFileDialog1.FileName != "")
+            {
+                fileName = saveFileDialog1.FileName;
+            }
+   
             try
             {
                 using (StreamWriter sw = new StreamWriter(fileName))
