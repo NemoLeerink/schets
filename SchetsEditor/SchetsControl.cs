@@ -106,7 +106,7 @@ namespace SchetsEditor
             this.schets.Teken(gr);
         }
 
-        private bool contains(Point location, Point centre, double xRadius, double yRadius)
+        private bool inEllipse(Point location, Point centre, double xRadius, double yRadius)
         {
             if (xRadius <= 0.0 || yRadius <= 0.0)
                 return false;
@@ -115,60 +115,81 @@ namespace SchetsEditor
                 ((double)(normalized.Y * normalized.Y) / (yRadius * yRadius)) <= 1.0;
         }
 
+        private bool inRectangle(Point location, Point bp, Point ep)
+        {
+            int minX = Math.Min(bp.X, ep.X);
+            int minY = Math.Min(bp.Y, ep.Y);
+            int lenX = Math.Abs(bp.X - ep.X);
+            int lenY = Math.Abs(bp.Y - ep.Y);
+            Rectangle r = new Rectangle(minX, minY, lenX, lenY);
+            if (r.Contains(location))
+                return true;
+            else
+                return false;
+        }
+
+        private bool closeToLine(Point location, Point bp, Point ep, int marge)
+        {
+            int minX = Math.Min(bp.X, ep.X);
+            int maxX = Math.Max(bp.X, ep.X);
+            int minY = Math.Min(bp.Y, ep.Y);
+            int maxY = Math.Max(bp.Y, ep.Y);
+            double deltax = ep.X - bp.X;
+            double deltay = ep.Y - bp.Y;
+
+            if (bp.X == ep.X)
+            {
+                Rectangle r = new Rectangle(minX-marge, minY, maxX - minX + marge*2, maxY - minY);
+                if (r.Contains(location))
+                    return true;
+            }
+            else
+            {
+                double rc = deltay / deltax;
+                double b = rc * bp.X - bp.Y;
+
+                for (int j = minX; j <= maxX; j++)
+                {
+                    if (location.X - j >= -marge &&
+                        location.X - j <= marge &&
+                        (location.Y - j * rc + b) >= -marge &&
+                        (location.Y - j * rc + b) <= marge)
+                        return true;
+                }
+            }
+            return false;
+        }
+
         public void verwijderElement(Point p1) 
         {
+            bool stop = false;
             for (int i = elementen.Count - 1; i >= 0; i--)
             {
-                if (elementen[i].soort == "lijn" || elementen[i].soort == "pen")
+                if (elementen[i].soort == "lijn" || elementen[i].soort == "pen" && stop == false)
                 {
-                    int mostx;
-                    int leastx;
-                    if (elementen[i].beginpunt.X > elementen[i].eindpunt.X)
+                    if (closeToLine(p1, elementen[i].beginpunt, elementen[i].eindpunt, 5))
                     {
-                        mostx = elementen[i].beginpunt.X;
-                        leastx = elementen[i].eindpunt.X;
-                    }
-                    else
-                    {
-                        mostx = elementen[i].eindpunt.X;
-                        leastx = elementen[i].beginpunt.X;
-                    }
-                    double deltax = elementen[i].eindpunt.X - elementen[i].beginpunt.X;
-                    double deltay = elementen[i].eindpunt.Y - elementen[i].beginpunt.Y;
-                    double rc = deltay / deltax;
-                    double b = rc * elementen[i].beginpunt.X - elementen[i].beginpunt.Y;
-                    
-                    for (int j = leastx; j <= mostx; j++)
-                    {
-                        if (p1.X - j >= -5 &&
-                            p1.X - j <= 5 &&
-                            (p1.Y - j*rc + b) >= -5 &&
-                            (p1.Y - j*rc + b) <= 5)
-                        {
-                            elementen.RemoveAt(i);
-                            break;
-                        }
+                        elementen.RemoveAt(i);
+                        stop = true;
+                        break;
                     }
                 }
-                else if (elementen[i].soort == "ovaal" || elementen[i].soort == "ovaalvol")
+                else if (elementen[i].soort == "ovaal" || elementen[i].soort == "ovaalvol" && stop == false)
                 {
                     int xRadius = Math.Abs(elementen[i].eindpunt.X - elementen[i].beginpunt.X) / 2;
                     int yRadius = Math.Abs(elementen[i].eindpunt.Y - elementen[i].beginpunt.Y) / 2;
                     int minX = Math.Min(elementen[i].beginpunt.X, elementen[i].eindpunt.X);
                     int minY = Math.Min(elementen[i].beginpunt.Y, elementen[i].eindpunt.Y);
                     Point centre = new Point(minX + xRadius, minY + yRadius);
-                    if (contains(p1, centre, xRadius, yRadius))
+                    if (inEllipse(p1, centre, xRadius, yRadius))
                     {
                         elementen.RemoveAt(i);
                         break;
                     }
                 }
-                else
+                else if (stop == false)
                 {
-                    if (p1.X - elementen[i].beginpunt.X >= 0 &&
-                        p1.X - elementen[i].eindpunt.X <= 0 &&
-                        p1.Y - elementen[i].beginpunt.Y >= 0 &&
-                        p1.Y - elementen[i].eindpunt.Y <= 0)
+                    if (inRectangle(p1, elementen[i].beginpunt, elementen[i].eindpunt))
                     {
                         elementen.RemoveAt(i);
                         break;
