@@ -104,27 +104,18 @@ namespace SchetsEditor
             try
             {
                 this.schetscontrol.elementen.Clear();
-                int nr = 0;
                 StreamReader sr = new StreamReader(pad);
                 string regel;
-                string[] w;
-                char[] separators = { ' ' };
+                
                 while ((regel = sr.ReadLine()) != null)
                 {
-                    nr++;
-                    w = regel.Split(separators, StringSplitOptions.RemoveEmptyEntries);
-                    if (w.Length == 7)
-                    {
-                        Point beginpunt = new Point(int.Parse(w[1]), int.Parse(w[2]));
-                        Point eindpunt = new Point(int.Parse(w[3]), int.Parse(w[4]));
-                        char c = char.Parse(w[5]);
-
-                        this.schetscontrol.maakNieuwElement(Color.FromName(w[0]), beginpunt, eindpunt, c, w[6]);
-                    }
+                        this.schetscontrol.maakNieuwElement(regel);
                 }
                 sr.Close();
+                
                 // Werkt niet? Werkte voorheen wel??
                 this.schetscontrol.Invalidate();
+                
             }
             catch (Exception e) 
             {
@@ -207,7 +198,6 @@ namespace SchetsEditor
         {   
             ToolStripMenuItem menu = new ToolStripMenuItem("Aktie");
             menu.DropDownItems.Add("Clear", null, schetscontrol.Schoon );
-            //menu.DropDownItems.Add("Roteer", null, schetscontrol.Roteer );
             ToolStripMenuItem submenu = new ToolStripMenuItem("Kies kleur");
             foreach (string k in kleuren)
                 submenu.DropDownItems.Add(k, null, schetscontrol.VeranderKleurViaMenu);
@@ -248,12 +238,6 @@ namespace SchetsEditor
             b.Location = new Point(  0, 0); 
             b.Click += schetscontrol.Schoon; 
             paneel.Controls.Add(b);
-            
-            /*b = new Button(); 
-            b.Text = "Rotate"; 
-            b.Location = new Point( 80, 0); 
-            b.Click += schetscontrol.Roteer; 
-            paneel.Controls.Add(b);*/
             
             l = new Label();  
             l.Text = "Penkleur:"; 

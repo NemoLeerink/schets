@@ -80,6 +80,13 @@ namespace SchetsEditor
             // Console.WriteLine(soort);
         }
 
+        public void maakNieuwElement(String s)
+        {
+            TekenElement element = new TekenElement(s);
+            elementen.Add(element);
+            // Console.WriteLine(soort);
+        }
+
         private void selectTool(String soort)
         {
             List<string> soortenlist = new List<string>(new string[] { "pen", "lijn", "kader", "vlak", "ovaal", "ovaalvol", "tekst", "gum" });
@@ -172,7 +179,7 @@ namespace SchetsEditor
     }
     public class TekenElement
     {
-        // (soort, beginpunt, eindpunt, kleur, eventuele tekst)
+
         public String soort;
         public Color kleur;
         public Point beginpunt;
@@ -186,6 +193,23 @@ namespace SchetsEditor
             eindpunt = elementEindpunt;
             tekst = charTekst;
             soort = elementSoort;
+        }
+
+        public TekenElement(String s)
+        {
+            string[] w;
+            char[] separators = { ' ' };
+
+            w = s.Split(separators, StringSplitOptions.RemoveEmptyEntries);
+            if (w.Length == 7)
+            {
+                kleur = Color.FromName(w[0]);
+                beginpunt = new Point(int.Parse(w[1]), int.Parse(w[2]));
+                eindpunt = new Point(int.Parse(w[3]), int.Parse(w[4]));
+                tekst = char.Parse(w[5]); ;
+                soort = w[6];
+
+            }
         }
 
         public override string ToString()
