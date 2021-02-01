@@ -112,8 +112,8 @@ namespace SchetsEditor
                         this.schetscontrol.maakNieuwElement(regel);
                 }
                 sr.Close();
-                
-                // Werkt niet? Werkte voorheen wel??
+  
+                this.schetscontrol.tekenOpGr();
                 this.schetscontrol.Invalidate();
                 
             }

@@ -87,14 +87,12 @@ namespace SchetsEditor
         {
             TekenElement element = new TekenElement(kleur, p1, p2, tekst, soort, dikte);
             elementen.Add(element);
-            // Console.WriteLine(soort);
         }
 
         public void maakNieuwElement(String s)
         {
             TekenElement element = new TekenElement(s);
             elementen.Add(element);
-            // Console.WriteLine(soort);
         }
 
         private void selectTool(String soort)

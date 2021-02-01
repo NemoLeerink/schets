@@ -52,8 +52,6 @@ namespace SchetsEditor
 
             startpunt.X += (int)sz.Width;
 
-            // Console.WriteLine("Count is: " + s.elementen.Count);
-
             s.tekenOpGr();
             s.Invalidate();
         }
@@ -106,8 +104,6 @@ namespace SchetsEditor
             else
                 s.verwijderElement(this.startpunt);
 
-            // Console.WriteLine("Count is: " + s.elementen.Count);
-
             s.tekenOpGr();      
             s.Invalidate();
         }
@@ -151,10 +147,6 @@ namespace SchetsEditor
             g.FillRectangle(new SolidBrush(kleur), TweepuntTool.Punten2Rechthoek(p1, p2));
         }
     }
-
-    /// <summary>
-    /// Ovaal en gevulde ovaal toegevoegd
-    /// </summary>
     public class OvaalTool : TweepuntTool
     {
         public override string ToString() { return "ovaal"; }
@@ -204,8 +196,7 @@ namespace SchetsEditor
         public override string ToString() { return "pen"; }
 
         public override void MuisDrag(SchetsControl s, Point p)
-        {
-            // this.MuisLos(s, p);
+        { 
             this.MuisLos(s, p, "pen");
             this.MuisVast(s, p);
         }
