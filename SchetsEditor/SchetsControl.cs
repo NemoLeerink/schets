@@ -180,8 +180,8 @@ namespace SchetsEditor
 
                 for (int j = minX; j <= maxX; j++)
                 {
-                    if (location.X - j >= -marge-halfDikte &&
-                        location.X - j <= marge+halfDikte &&
+                    if (location.X - j >= -marge - halfDikte &&
+                        location.X - j <= marge + halfDikte &&
                         (location.Y - j * rc + b) >= -marge &&
                         (location.Y - j * rc + b) <= marge)
                         return true;
@@ -236,7 +236,7 @@ namespace SchetsEditor
                 }
                 else
                 {
-                    if (inRectangle(p1, elementen[i].beginpunt, elementen[i].eindpunt, elementen[i].dikte, 5))
+                    if (inRectangle(p1, elementen[i].beginpunt, elementen[i].eindpunt, 0, 5))
                     {
                         elementen.RemoveAt(i);
                         break;
