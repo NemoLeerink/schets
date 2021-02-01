@@ -6,9 +6,10 @@ using System.Windows.Forms;
 
 namespace SchetsEditor
 {   public class SchetsControl : UserControl
-    {   
+    {
         private Schets schets;
         private Color penkleur;
+        private int dikte;
         public List<TekenElement> elementen = new List<TekenElement>();
 
         ISchetsTool huidigeTool;
@@ -27,8 +28,12 @@ namespace SchetsEditor
         { get { return penkleur; }
         }
         public Schets Schets
-        { get { return schets;   }
+        { get { return schets; }
         }
+        public int Dikte
+        { get { return dikte; }
+        }
+        
         public SchetsControl()
         {   this.BorderStyle = BorderStyle.Fixed3D;
             this.schets = new Schets();
@@ -73,9 +78,14 @@ namespace SchetsEditor
         {   string kleurNaam = ((ToolStripMenuItem)obj).Text;
             penkleur = Color.FromName(kleurNaam);
         }
-        public void maakNieuwElement(Color kleur, Point p1, Point p2, Char tekst, String soort)
+        public void VeranderDikte(object obj, EventArgs ea)
         {
-            TekenElement element = new TekenElement(kleur, p1, p2, tekst, soort);
+            string inDikte = ((NumericUpDown)obj).Text;
+            dikte = int.Parse(inDikte);
+        }
+        public void maakNieuwElement(Color kleur, Point p1, Point p2, Char tekst, String soort, int dikte)
+        {
+            TekenElement element = new TekenElement(kleur, p1, p2, tekst, soort, dikte);
             elementen.Add(element);
             // Console.WriteLine(soort);
         }
@@ -100,7 +110,7 @@ namespace SchetsEditor
             foreach (TekenElement el in elementen)
             {
                 selectTool(el.soort);
-                huidigeTool.Teken(gr, el.beginpunt, el.eindpunt, el.kleur, el.tekst);
+                huidigeTool.Teken(gr, el.beginpunt, el.eindpunt, el.kleur, el.tekst, el.dikte);
             }
 
             this.schets.Teken(gr);
@@ -206,14 +216,16 @@ namespace SchetsEditor
         public Point beginpunt;
         public Point eindpunt;
         public Char tekst;
+        public int dikte;
 
-        public TekenElement(Color elementKleur, Point elementBeginpunt, Point elementEindpunt, Char charTekst, String elementSoort)
+        public TekenElement(Color elementKleur, Point elementBeginpunt, Point elementEindpunt, Char charTekst, String elementSoort, int dik)
         {
             kleur = elementKleur;
             beginpunt = elementBeginpunt;
             eindpunt = elementEindpunt;
             tekst = charTekst;
             soort = elementSoort;
+            dikte = dik;
         }
 
         public TekenElement(String s)
@@ -222,20 +234,19 @@ namespace SchetsEditor
             char[] separators = { ' ' };
 
             w = s.Split(separators, StringSplitOptions.RemoveEmptyEntries);
-            if (w.Length == 7)
+            if (w.Length == 8)
             {
                 kleur = Color.FromName(w[0]);
                 beginpunt = new Point(int.Parse(w[1]), int.Parse(w[2]));
                 eindpunt = new Point(int.Parse(w[3]), int.Parse(w[4]));
-                tekst = char.Parse(w[5]); ;
-                soort = w[6];
+                tekst = char.Parse(w[5]); soort = w[6]; dikte = int.Parse(w[7]);
 
             }
         }
 
         public override string ToString()
         {
-            return $"{kleur.Name} {beginpunt.X} {beginpunt.Y} {eindpunt.X} {eindpunt.Y} {tekst} {soort}";
+            return $"{kleur.Name} {beginpunt.X} {beginpunt.Y} {eindpunt.X} {eindpunt.Y} {tekst} {soort} {dikte}";
         }
     }
 }

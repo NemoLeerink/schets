@@ -128,7 +128,7 @@ namespace SchetsEditor
         {
 
             String[] deKleuren = { "Black", "Red", "Green", "Blue"
-                                 , "Yellow", "Magenta", "Cyan" 
+                                 , "Yellow", "Magenta", "Cyan", "White"
                                  };
 
             this.ClientSize = new Size(700, 500);
@@ -232,7 +232,7 @@ namespace SchetsEditor
             paneel.Size = new Size(600, 24);
             this.Controls.Add(paneel);
             
-            Button b; Label l; ComboBox cbb;
+            Button b; Label l; ComboBox cbb; Label l2; NumericUpDown n;
             b = new Button(); 
             b.Text = "Clear";  
             b.Location = new Point(  0, 0); 
@@ -241,17 +241,32 @@ namespace SchetsEditor
             
             l = new Label();  
             l.Text = "Penkleur:"; 
-            l.Location = new Point(180, 3); 
+            l.Location = new Point(120, 3); 
             l.AutoSize = true;               
             paneel.Controls.Add(l);
             
-            cbb = new ComboBox(); cbb.Location = new Point(240, 0); 
+            cbb = new ComboBox();
+            cbb.Location = new Point(180, 0); 
             cbb.DropDownStyle = ComboBoxStyle.DropDownList; 
             cbb.SelectedValueChanged += schetscontrol.VeranderKleur;
             foreach (string k in kleuren)
                 cbb.Items.Add(k);
             cbb.SelectedIndex = 0;
             paneel.Controls.Add(cbb);
+
+            l2 = new Label();
+            l2.Text = "Pendikte:";
+            l2.Location = new Point(320, 3);
+            l2.AutoSize = true;
+            paneel.Controls.Add(l2);
+
+            n = new NumericUpDown();
+            n.Location = new Point(400, 0);
+            n.Minimum = 1;
+            n.Maximum = 40;
+            n.Value = 3;
+            n.ValueChanged += schetscontrol.VeranderDikte;
+            paneel.Controls.Add(n);
         }
     }
 }

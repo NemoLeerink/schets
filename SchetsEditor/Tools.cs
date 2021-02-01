@@ -10,13 +10,14 @@ namespace SchetsEditor
         void MuisDrag(SchetsControl s, Point p);
         void MuisLos(SchetsControl s, Point p, String huidigeTool);
         void Letter(SchetsControl s, char c, String huidigeTool);
-        void Teken(Graphics g, Point p1, Point p2, Color kleur, Char charTekst);
+        void Teken(Graphics g, Point p1, Point p2, Color kleur, Char charTekst, int dikte);
     }
 
     public abstract class StartpuntTool : ISchetsTool
     {
         protected Point startpunt;
         protected Brush kwast;
+        protected int dikte;
 
         public virtual void MuisVast(SchetsControl s, Point p)
         {
@@ -25,10 +26,11 @@ namespace SchetsEditor
         public virtual void MuisLos(SchetsControl s, Point p, String huidigeTool)
         {
             kwast = new SolidBrush(s.PenKleur);
+            dikte = s.Dikte;
         }
         public abstract void MuisDrag(SchetsControl s, Point p);
         public abstract void Letter(SchetsControl s, char c, String huidigeTool);
-        public abstract void Teken(Graphics g, Point p1, Point p2, Color kleur, Char charTekst);
+        public abstract void Teken(Graphics g, Point p1, Point p2, Color kleur, Char charTekst, int dikte);
     }
 
     public class TekstTool : StartpuntTool
@@ -46,7 +48,7 @@ namespace SchetsEditor
             SizeF sz =
                 g.MeasureString(tekst, font, startpunt.X, StringFormat.GenericTypographic);
 
-            s.maakNieuwElement(s.PenKleur, new Point(startpunt.X, startpunt.Y), new Point(startpunt.X + (int)sz.Width, startpunt.Y + (int)sz.Height), c, huidigeTool);
+            s.maakNieuwElement(s.PenKleur, new Point(startpunt.X, startpunt.Y), new Point(startpunt.X + (int)sz.Width, startpunt.Y + (int)sz.Height), c, huidigeTool, 3);
 
             startpunt.X += (int)sz.Width;
 
@@ -55,7 +57,7 @@ namespace SchetsEditor
             s.tekenOpGr();
             s.Invalidate();
         }
-        public override void Teken(Graphics g, Point p1, Point p2, Color kleur, Char c)
+        public override void Teken(Graphics g, Point p1, Point p2, Color kleur, Char c, int dikte)
         {
             if (c >= 32)
             {
@@ -99,7 +101,7 @@ namespace SchetsEditor
             base.MuisLos(s, p, huidigeTool);
             if (huidigeTool != "gum")
             {
-                s.maakNieuwElement(s.PenKleur, this.startpunt, p, '0', huidigeTool);
+                s.maakNieuwElement(s.PenKleur, this.startpunt, p, '0', huidigeTool, s.Dikte);
             }
             else
                 s.verwijderElement(this.startpunt);
@@ -129,9 +131,9 @@ namespace SchetsEditor
         {
             g.DrawRectangle(MaakPen(kwast, 3), TweepuntTool.Punten2Rechthoek(p1, p2));
         }
-        public override void Teken(Graphics g, Point p1, Point p2, Color kleur, Char c)
+        public override void Teken(Graphics g, Point p1, Point p2, Color kleur, Char c, int dikte)
         {
-            g.DrawRectangle(MaakPen(new SolidBrush(kleur), 3), TweepuntTool.Punten2Rechthoek(p1, p2));
+            g.DrawRectangle(MaakPen(new SolidBrush(kleur), dikte), TweepuntTool.Punten2Rechthoek(p1, p2));
         }
     }
 
@@ -144,7 +146,7 @@ namespace SchetsEditor
             g.FillRectangle(kwast, TweepuntTool.Punten2Rechthoek(p1, p2));
         }
 
-        public override void Teken(Graphics g, Point p1, Point p2, Color kleur, Char c)
+        public override void Teken(Graphics g, Point p1, Point p2, Color kleur, Char c, int dikte)
         {
             g.FillRectangle(new SolidBrush(kleur), TweepuntTool.Punten2Rechthoek(p1, p2));
         }
@@ -161,9 +163,9 @@ namespace SchetsEditor
         {
             g.DrawEllipse(MaakPen(kwast, 3), TweepuntTool.Punten2Rechthoek(p1, p2));
         }
-        public override void Teken(Graphics g, Point p1, Point p2, Color kleur, Char c)
+        public override void Teken(Graphics g, Point p1, Point p2, Color kleur, Char c, int dikte)
         {
-            g.DrawEllipse(MaakPen(new SolidBrush(kleur), 3), TweepuntTool.Punten2Rechthoek(p1, p2));
+            g.DrawEllipse(MaakPen(new SolidBrush(kleur), dikte), TweepuntTool.Punten2Rechthoek(p1, p2));
         }
     }
 
@@ -176,7 +178,7 @@ namespace SchetsEditor
             g.FillEllipse(kwast, TweepuntTool.Punten2Rechthoek(p1, p2));
         }
 
-        public override void Teken(Graphics g, Point p1, Point p2, Color kleur, char c)
+        public override void Teken(Graphics g, Point p1, Point p2, Color kleur, char c, int dikte)
         {
             g.FillEllipse(new SolidBrush(kleur), TweepuntTool.Punten2Rechthoek(p1, p2));
         }
@@ -191,9 +193,9 @@ namespace SchetsEditor
             g.DrawLine(MaakPen(this.kwast, 3), p1, p2);
         }
 
-        public override void Teken(Graphics g, Point p1, Point p2, Color kleur, Char c)
+        public override void Teken(Graphics g, Point p1, Point p2, Color kleur, Char c, int dikte)
         {
-            g.DrawLine(new Pen(new SolidBrush(kleur)), p1, p2);
+            g.DrawLine(new Pen(new SolidBrush(kleur), dikte), p1, p2);
         }
     }
 
@@ -217,7 +219,7 @@ namespace SchetsEditor
         {
         }
 
-        public override void Teken(Graphics g, Point p1, Point p2, Color kleur, Char c)
+        public override void Teken(Graphics g, Point p1, Point p2, Color kleur, Char c, int dikte)
         {
         }
     }
