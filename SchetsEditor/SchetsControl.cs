@@ -116,8 +116,10 @@ namespace SchetsEditor
             this.schets.Teken(gr);
         }
 
-        private bool inEllipse(Point location, Point centre, double xRadius, double yRadius)
+        private bool inEllipse(Point location, Point centre, double xRad, double yRad, int dikte, int marge)
         {
+            double xRadius = xRad + dikte * 0.5 + marge;
+            double yRadius = yRad + dikte * 0.5 + marge;
             if (xRadius <= 0.0 || yRadius <= 0.0)
                 return false;
             Point normalized = new Point(location.X - centre.X, location.Y - centre.Y);
@@ -125,12 +127,21 @@ namespace SchetsEditor
                 ((double)(normalized.Y * normalized.Y) / (yRadius * yRadius)) <= 1.0;
         }
 
-        private bool inRectangle(Point location, Point bp, Point ep)
+        private bool onEllipse(Point location, Point centre, double xRadius, double yRadius, int dikte, int marge)
         {
-            int minX = Math.Min(bp.X, ep.X);
-            int minY = Math.Min(bp.Y, ep.Y);
-            int lenX = Math.Abs(bp.X - ep.X);
-            int lenY = Math.Abs(bp.Y - ep.Y);
+            if (inEllipse(location, centre, xRadius, yRadius, dikte, marge) && !inEllipse(location, centre, xRadius, yRadius, -dikte, -marge))
+                return true;
+            else
+                return false;
+        }
+
+        private bool inRectangle(Point location, Point bp, Point ep, int dikte, int marge)
+        {
+            int halfDikte = (int)(dikte * 0.5);
+            int minX = Math.Min(bp.X, ep.X) - marge - halfDikte;
+            int minY = Math.Min(bp.Y, ep.Y) - marge - halfDikte;
+            int lenX = Math.Abs(bp.X - ep.X) + marge*2 + dikte;
+            int lenY = Math.Abs(bp.Y - ep.Y) + marge*2 + dikte;
             Rectangle r = new Rectangle(minX, minY, lenX, lenY);
             if (r.Contains(location))
                 return true;
@@ -138,7 +149,15 @@ namespace SchetsEditor
                 return false;
         }
 
-        private bool closeToLine(Point location, Point bp, Point ep, int marge)
+        private bool onKader(Point location, Point bp, Point ep, int dikte, int marge)
+        {
+            if (inRectangle(location, bp, ep, marge, dikte) && !inRectangle(location, bp, ep, -marge, -dikte))
+                return true;
+            else
+                return false;
+        }
+
+        private bool closeToLine(Point location, Point bp, Point ep, int dikte, int marge)
         {
             int minX = Math.Min(bp.X, ep.X);
             int maxX = Math.Max(bp.X, ep.X);
@@ -146,10 +165,11 @@ namespace SchetsEditor
             int maxY = Math.Max(bp.Y, ep.Y);
             double deltax = ep.X - bp.X;
             double deltay = ep.Y - bp.Y;
+            int halfDikte = (int) (dikte * 0.5);
 
             if (bp.X == ep.X)
             {
-                Rectangle r = new Rectangle(minX-marge, minY, maxX - minX + marge*2, maxY - minY);
+                Rectangle r = new Rectangle(minX-marge-halfDikte, minY-marge, maxX - minX + marge*2+dikte, maxY - minY+marge);
                 if (r.Contains(location))
                     return true;
             }
@@ -160,8 +180,8 @@ namespace SchetsEditor
 
                 for (int j = minX; j <= maxX; j++)
                 {
-                    if (location.X - j >= -marge &&
-                        location.X - j <= marge &&
+                    if (location.X - j >= -marge-halfDikte &&
+                        location.X - j <= marge+halfDikte &&
                         (location.Y - j * rc + b) >= -marge &&
                         (location.Y - j * rc + b) <= marge)
                         return true;
@@ -172,34 +192,51 @@ namespace SchetsEditor
 
         public void verwijderElement(Point p1) 
         {
-            bool stop = false;
             for (int i = elementen.Count - 1; i >= 0; i--)
             {
-                if (elementen[i].soort == "lijn" || elementen[i].soort == "pen" && stop == false)
+                if (elementen[i].soort == "lijn" || elementen[i].soort == "pen")
                 {
-                    if (closeToLine(p1, elementen[i].beginpunt, elementen[i].eindpunt, 5))
+                    if (closeToLine(p1, elementen[i].beginpunt, elementen[i].eindpunt, elementen[i].dikte, 5))
                     {
                         elementen.RemoveAt(i);
-                        stop = true;
                         break;
                     }
                 }
-                else if (elementen[i].soort == "ovaal" || elementen[i].soort == "ovaalvol" && stop == false)
+                else if (elementen[i].soort == "ovaal" || elementen[i].soort == "ovaalvol")
                 {
                     int xRadius = Math.Abs(elementen[i].eindpunt.X - elementen[i].beginpunt.X) / 2;
                     int yRadius = Math.Abs(elementen[i].eindpunt.Y - elementen[i].beginpunt.Y) / 2;
                     int minX = Math.Min(elementen[i].beginpunt.X, elementen[i].eindpunt.X);
                     int minY = Math.Min(elementen[i].beginpunt.Y, elementen[i].eindpunt.Y);
                     Point centre = new Point(minX + xRadius, minY + yRadius);
-                    if (inEllipse(p1, centre, xRadius, yRadius))
+                    if (elementen[i].soort == "ovaalvol")
+                    {
+                        if (inEllipse(p1, centre, xRadius, yRadius, 0, 5))
+                        {
+                            elementen.RemoveAt(i);
+                            break;
+                        }
+                    }
+                    if (elementen[i].soort == "ovaal")
+                    {
+                        if (onEllipse(p1, centre, xRadius, yRadius, elementen[i].dikte, 5))
+                        {
+                            elementen.RemoveAt(i);
+                            break;
+                        }
+                    }
+                }
+                else if (elementen[i].soort == "kader")
+                {
+                    if (onKader(p1, elementen[i].beginpunt, elementen[i].eindpunt, elementen[i].dikte, 5))
                     {
                         elementen.RemoveAt(i);
                         break;
                     }
                 }
-                else if (stop == false)
+                else
                 {
-                    if (inRectangle(p1, elementen[i].beginpunt, elementen[i].eindpunt))
+                    if (inRectangle(p1, elementen[i].beginpunt, elementen[i].eindpunt, elementen[i].dikte, 5))
                     {
                         elementen.RemoveAt(i);
                         break;
